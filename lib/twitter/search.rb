@@ -1,10 +1,7 @@
 require 'pp'
 module Twitter
   class Search
-    include HTTParty
     include Enumerable
-    base_uri "search.twitter.com/search"
-    format :json
 
     attr_reader :result, :query
 
@@ -12,9 +9,8 @@ module Twitter
       @options = options
       clear
       containing(q) if q && q.strip != ""
-      endpoint_url = options[:api_endpoint]
-      endpoint_url = "#{endpoint_url}/search" if endpoint_url && !endpoint_url.include?("/search")
-      self.class.base_uri(endpoint_url) if endpoint_url
+      @endpoint = options[:api_endpoint] || 'search.twitter.com/search.json'
+      @endpoint = Addressable::URI.heuristic_parse(@endpoint)
     end
 
     def user_agent
@@ -151,12 +147,28 @@ module Twitter
         s
       end
     end
+    
+    def connection
+      headers = {
+        :user_agent => user_agent
+      }
+      @connection ||= Faraday::Connection.new(:url => @endpoint.omit(:path), :headers => headers) do |builder|
+        builder.adapter(@adapter || Faraday.default_adapter)
+        builder.use Faraday::Response::MultiJson
+        builder.use Faraday::Response::Mashify
+      end
+            
+    end
 
     protected
+    
+
+
 
     def perform_get(query)
-      response = self.class.get("#{self.class.base_uri}.json", :query => query, :format => :json, :headers => {"User-Agent" => user_agent})
-      @fetch = Twitter.mash(response)
+      @fetch = connection.get do |req|
+        req.url @endpoint.path, query
+      end.body
     end
 
   end

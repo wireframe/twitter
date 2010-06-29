@@ -4,6 +4,10 @@ require "hashie"
 require "httparty"
 require "yajl"
 
+require 'faraday'
+require 'faraday_middleware'
+require 'addressable/uri'
+
 module Twitter
   include HTTParty
   API_VERSION = "1".freeze

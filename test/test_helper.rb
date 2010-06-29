@@ -8,6 +8,7 @@ require "redgreen"
 
 FakeWeb.allow_net_connect = false
 
+
 dir = (Pathname(__FILE__).dirname + "../lib").expand_path
 require dir + "twitter"
 
