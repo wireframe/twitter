@@ -1,3 +1,10 @@
+0.9.9 - xxxx
+  * Ported to Faraday
+  * Search changes:
+    * Added locale support
+  * Trends
+    * Folded LocalTrends back into Trends
+    * Properly returning metadata for trend calls instead of just raw results
 0.9.8 - June 22, 2010 
   * Patch from @spagalloco for Geo API
   * Patch from @apigee to set api_endpoint for unauthenticated calls

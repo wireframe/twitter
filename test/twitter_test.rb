@@ -1,6 +1,18 @@
 require 'test_helper'
 
 class TwitterTest < Test::Unit::TestCase
+  
+  should "default User Agent to 'Ruby Twitter Gem'" do
+    Twitter.user_agent.should == 'Ruby Twitter Gem'
+  end
+  
+  context 'when overriding the user agent' do
+    should "be able to specify the User Agent" do
+      Twitter.user_agent = "My Twitter Gem"
+      Twitter.user_agent.should == 'My Twitter Gem'
+    end
+  end
+  
   should "have firehose method for public timeline" do
     stub_get('http://api.twitter.com:80/1/statuses/public_timeline.json', 'firehose.json')
     hose = Twitter.firehose

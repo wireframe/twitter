@@ -29,6 +29,14 @@ module Twitter
   class Unavailable   < StandardError; end
   class InformTwitter < StandardError; end
   class NotFound      < StandardError; end
+  
+  def self.user_agent
+    @user_agent ||= 'Ruby Twitter Gem'
+  end
+  
+  def self.user_agent=(value)
+    @user_agent = value
+  end
 
   def self.api_endpoint
     @api_endpoint ||= "api.twitter.com/#{API_VERSION}"
@@ -156,5 +164,6 @@ require File.join(directory, "twitter", "httpauth")
 require File.join(directory, "twitter", "request")
 require File.join(directory, "twitter", "base")
 require File.join(directory, "twitter", "search")
+require File.join(directory, "twitter", "trends", "client")
 require File.join(directory, "twitter", "trends")
 require File.join(directory, "twitter", "geo")

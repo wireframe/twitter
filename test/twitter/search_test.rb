@@ -5,6 +5,23 @@ class SearchTest < Test::Unit::TestCase
     setup do
       @search = Twitter::Search.new
     end
+    
+    should "default the endpoint to 'search.twitter.com/search.json'" do
+      stub_get("http://search.twitter.com/search.json?q=", "search.json")
+      @search.fetch()
+    end
+    
+    should "allow overriding the endpoint" do
+      stub_get("http://tumblr.com/search.json?q=test", "search.json")
+      search = Twitter::Search.new('test', :api_endpoint => 'tumblr.com/search.json')
+      search.fetch()
+    end
+    
+    should "supply endpoint path if only endpoint domain specified" do
+      stub_get("http://tumblr.com/search.json?q=test", "search.json")
+      search = Twitter::Search.new('test', :api_endpoint => 'tumblr.com')
+      search.fetch()
+    end
 
     should "default user agent to Ruby Twitter Gem" do
       search = Twitter::Search.new('foo')
@@ -72,6 +89,12 @@ class SearchTest < Test::Unit::TestCase
     should "should be able to specify the language" do
       stub_get("http://search.twitter.com/search.json?q=&lang=en", "search.json")
       @search.lang('en')
+      @search.fetch()
+    end
+    
+    should "be able to specify the locale" do
+      stub_get("http://search.twitter.com/search.json?q=&locale=ja", "search.json")
+      @search.locale('ja')
       @search.fetch()
     end
     

@@ -5,12 +5,14 @@ module Twitter
 
     attr_reader :result, :query
 
-    def initialize(q=nil, options={})
+    def initialize(q=nil, options={}, params={})
+      @adapter = options.delete(:adapter)
       @options = options
       clear
       containing(q) if q && q.strip != ""
       @endpoint = options[:api_endpoint] || 'search.twitter.com/search.json'
       @endpoint = Addressable::URI.heuristic_parse(@endpoint)
+      @endpoint.path = "/search.json" if @endpoint.path.blank?
     end
 
     def user_agent
@@ -61,6 +63,11 @@ module Twitter
       @query[:lang] = lang
       self
     end
+    
+    def locale(locale)
+      @query[:locale] = locale
+      self
+    end
 
     # popular|recent
     def result_type(result_type)
@@ -73,6 +80,7 @@ module Twitter
       @query[:rpp] = num
       self
     end
+    alias :rpp :per_page
 
     # Which page of results to fetch
     def page(num)
@@ -100,6 +108,7 @@ module Twitter
       @query[:until] = until_date
       self
     end
+    alias :until :until_date
 
     # Ranges like 25km and 50mi work.
     def geocode(lat, long, range)
