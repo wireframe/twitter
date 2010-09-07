@@ -46,7 +46,7 @@ module Twitter
     private
 
     def basic_auth
-      @basic_auth ||= {:username => @username, :password => @password}
+      @password.nil? ? nil : {:username => @username, :password => @password}
     end
 
   end
